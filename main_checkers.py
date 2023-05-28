@@ -66,19 +66,27 @@ class Checkerboard:
         if player == self.player_2 and row_end > row_start:
             return False
 
-        valid_moves = self.adjacency_list[start]
-
-        if end in valid_moves:
+        # if abs(row_end - row_start) == 1 and abs(col_end - col_start) == 1:
+        #     if abs(row_end - row_start) == 1:
+        #         self.board[end] = player
+        #         del self.board[start]
+        #         return True
+        if end in self.adjacency_list[start]:
             self.board[end] = player
             del self.board[start]
-
-            jumped_piece = self.get_jumped_piece(start, end)
-            if jumped_piece:
-                del self.board[jumped_piece]
-
             return True
 
+        elif abs(row_end - row_start) == 2 and abs(col_end - col_start) == 2:
+            jumped_piece = ((row_end + row_start) // 2, (col_end + col_start) // 2)
+            if jumped_piece in self.board and self.board[jumped_piece] != player:
+                self.board[end] = player
+                del self.board[start]
+                del self.board[jumped_piece]
+                return True
+
         return False
+
+
 
     def get_jumped_piece(self, start, end):
         row_start, col_start = start
